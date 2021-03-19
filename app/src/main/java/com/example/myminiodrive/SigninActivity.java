@@ -10,6 +10,8 @@ import android.widget.EditText;
 
 public class SigninActivity extends AppCompatActivity {
 
+    private Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,9 +25,9 @@ public class SigninActivity extends AppCompatActivity {
                 EditText username=findViewById(R.id.editTextTextUserName);
                 EditText password=findViewById(R.id.editTextTextPassword);
 
-                if (username.getText().toString().equals("nisu") && password.getText().toString().equals("parola1123")){
-                    //intent=new Intent(getApplicationContext(), SigninActivity.class);
-                    //startActivity(intent);
+                if (username.getText().toString().equals("nisu") && password.getText().toString().equals("parola123")){
+                    intent=new Intent(getApplicationContext(), DriveFirstActivity.class);
+                    startActivity(intent);
                 }
                 else {
 
