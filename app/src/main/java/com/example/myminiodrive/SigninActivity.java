@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import java.util.List;
 
 public class SigninActivity extends AppCompatActivity {
 
@@ -24,13 +27,16 @@ public class SigninActivity extends AppCompatActivity {
             public void onClick(View v) {
                 EditText username=findViewById(R.id.editTextTextUserName);
                 EditText password=findViewById(R.id.editTextTextPassword);
+                UsersDB db = UsersDB.getInstance(getApplicationContext());
+                List<Users>usersList=db.getUsersDao().getUsersByNameAndPassword(username.getText().toString(), password.getText().toString());
 
-                if (username.getText().toString().equals("nisu") && password.getText().toString().equals("parola123")){
+                if (usersList.isEmpty()){
+                    Toast.makeText(getApplicationContext(), "Incorrect " +
+                            "username or password", Toast.LENGTH_LONG).show();
+                }
+                else{
                     intent=new Intent(getApplicationContext(), DriveFirstActivity.class);
                     startActivity(intent);
-                }
-                else {
-
                 }
 
             }
