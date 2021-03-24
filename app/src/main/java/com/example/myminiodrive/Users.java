@@ -12,7 +12,7 @@ public class Users {
     private String mail;
     private String password;
 
-    public Users(int id, String username, String mail, String password) {
+    public Users(String username, String mail, String password) {
         this.id = id;
         this.username = username;
         this.mail = mail;
