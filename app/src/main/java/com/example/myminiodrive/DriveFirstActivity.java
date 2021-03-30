@@ -10,5 +10,10 @@ public class DriveFirstActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drive_first);
+
+        Runnable rnb = new ServerConnection();
+
+        Thread th = new Thread(rnb);
+        th.start();
     }
 }
