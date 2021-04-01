@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".DriveFirstActivity">
 
+
+    <ListView
+        android:id="@+id/listViewBuckets"
+        android:layout_width="395dp"
+        android:layout_height="574dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"

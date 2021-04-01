@@ -1,20 +1,22 @@
 package com.example.myminiodrive;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
-public class Bucket {
+public class MyBuckets {
 
     private String name;
+    private ZonedDateTime date;
     private int objectsCount;
     private List<Objects> objectsList;
 
-    public Bucket(String name, int objectsCount, List<Objects> objectsList) {
+    public MyBuckets(String name, int objectsCount, List<Objects> objectsList) {
         this.name = name;
         this.objectsCount = objectsCount;
         this.objectsList = objectsList;
     }
 
-    public Bucket(String name, int objectsCount) {
+    public MyBuckets(String name, int objectsCount) {
         this.name = name;
         this.objectsCount = objectsCount;
     }
