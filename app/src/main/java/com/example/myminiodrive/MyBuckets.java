@@ -7,18 +7,10 @@ public class MyBuckets {
 
     private String name;
     private ZonedDateTime date;
-    private int objectsCount;
-    private List<Objects> objectsList;
 
-    public MyBuckets(String name, int objectsCount, List<Objects> objectsList) {
+    public MyBuckets(String name, ZonedDateTime date) {
         this.name = name;
-        this.objectsCount = objectsCount;
-        this.objectsList = objectsList;
-    }
-
-    public MyBuckets(String name, int objectsCount) {
-        this.name = name;
-        this.objectsCount = objectsCount;
+        this.date = date;
     }
 
     public String getName() {
@@ -29,20 +21,11 @@ public class MyBuckets {
         this.name = name;
     }
 
-    public int getObjectsCount() {
-        return objectsCount;
+    public ZonedDateTime getDate() {
+        return date;
     }
 
-    public void setObjectsCount(int objectsCount) {
-        this.objectsCount = objectsCount;
+    public void setDate(ZonedDateTime date) {
+        this.date = date;
     }
-
-    public List<Objects> getObjectsList() {
-        return objectsList;
-    }
-
-    public void setObjectsList(List<Objects> objectsList) {
-        this.objectsList = objectsList;
-    }
-
 }
