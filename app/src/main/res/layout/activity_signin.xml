@@ -66,6 +66,7 @@
         android:layout_marginStart="146dp"
         android:layout_marginTop="40dp"
         android:text="@string/sign_in"
+        android:backgroundTint="@color/teal_700"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
 </androidx.constraintlayout.widget.ConstraintLayout>

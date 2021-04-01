@@ -35,6 +35,7 @@
         android:layout_marginStart="152dp"
         android:layout_marginTop="30dp"
         android:text="@string/sign_in"
+        android:backgroundTint="@color/teal_700"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -56,6 +57,7 @@
         android:layout_marginStart="152dp"
         android:layout_marginTop="30dp"
         android:text="@string/register"
+        android:backgroundTint="@color/teal_700"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
