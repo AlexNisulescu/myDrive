@@ -40,7 +40,7 @@ public class ObjectCustomAdapter extends ArrayAdapter<Objects> {
             TextView tv1 = view.findViewById(R.id.textViewObjectName);
             tv1.setText(obj.getName());
             TextView tv2 = view.findViewById(R.id.textViewObjectSize);
-            tv2.setText(obj.getSize());
+            tv2.setText("Size: " + obj.getSize() + " bytes");
             TextView tv3 = view.findViewById(R.id.textViewObjectDate);
             tv3.setText(obj.getDate());
         }

@@ -8,10 +8,10 @@
 
     <ListView
         android:id="@+id/listViewObjects"
-        android:layout_width="370dp"
-        android:layout_height="541dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="360dp"
+        android:layout_height="450dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="116dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,4 +25,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add" />
+
+    <EditText
+        android:id="@+id/editTextSearchBar"
+        android:layout_width="360dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"
+        android:ems="10"
+        android:hint="@string/search"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
