@@ -48,10 +48,12 @@ public class DriveSecondActivity extends AppCompatActivity {
         setContentView(R.layout.activity_drive_second);
 
         listView=findViewById(R.id.listViewObjects);
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         FloatingActionButton btn=findViewById(R.id.floatingActionButton2);
 
-        StrictMode.setThreadPolicy(policy);
         Intent intent=getIntent();
 
         String name=(String) intent.getSerializableExtra(DriveFirstActivity.BUCKET_NAME);
