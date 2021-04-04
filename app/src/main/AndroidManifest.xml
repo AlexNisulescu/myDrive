@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyMinIODrive">
-        <activity android:name=".FileExplorerActivity"></activity>
+        <activity android:name=".StatsActivity"></activity>
+        <activity android:name=".FileExplorerActivity" />
         <activity android:name=".DriveSecondActivity" />
         <activity android:name=".DriveFirstActivity" />
         <activity android:name=".RegisterActivity" />

@@ -8,4 +8,5 @@
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="search">Search...</string>
+    <string name="space_used_vs_total_bucket_space">Space Used vs. Total Bucket Space</string>
 </resources>

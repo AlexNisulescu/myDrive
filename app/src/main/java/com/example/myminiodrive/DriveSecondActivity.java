@@ -254,6 +254,17 @@ public class DriveSecondActivity extends AppCompatActivity {
             }
         });
 
+        Button chart = findViewById(R.id.chartButton);
+
+        chart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getApplicationContext(), StatsActivity.class);
+                intent.putExtra("bucketName", name);
+                startActivity(intent);
+            }
+        });
+
     }
 
     /***
