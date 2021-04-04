@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.text.Editable;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -40,6 +42,7 @@ import io.minio.MinioClient;
 import io.minio.RemoveBucketArgs;
 import io.minio.RemoveObjectArgs;
 import io.minio.Result;
+import io.minio.UploadObjectArgs;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -53,9 +56,11 @@ public class DriveSecondActivity extends AppCompatActivity {
     private MinioClient minioClient;
     private List<Objects> objectList= new ArrayList<>();
     private ListView listView;
+    public static final int REQUEST_CODE=200;
     private InputStream in;
     private ByteArrayOutputStream out;
     private byte[] response;
+    String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +76,7 @@ public class DriveSecondActivity extends AppCompatActivity {
 
         Intent intent=getIntent();
 
-        String name=(String) intent.getSerializableExtra(DriveFirstActivity.BUCKET_NAME);
+        name=(String) intent.getSerializableExtra(DriveFirstActivity.BUCKET_NAME);
 
         try {
             objectsGetter(name);
@@ -194,6 +199,14 @@ public class DriveSecondActivity extends AppCompatActivity {
             }
         });
 
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getApplicationContext(), FileExplorerActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
+
         /***
          * This is where the search bar magic happens
          */
@@ -286,6 +299,29 @@ public class DriveSecondActivity extends AppCompatActivity {
             Item item=res.get();
             Objects obj=new Objects(item.objectName(), item.size(), item.lastModified());
             objectList.add(obj);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode==REQUEST_CODE && resultCode==RESULT_OK && data!=null){
+            String filename = (String) data.getSerializableExtra(FileExplorerActivity.ADD_FILE);
+
+            String path = "/sdcard/Download/" + filename;
+
+            try {
+                minioClient.uploadObject(
+                        UploadObjectArgs.builder()
+                                .bucket(name).object(filename).filename(path).build());
+                objectList.clear();
+                objectsGetter(name);
+                loadList();
+            } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException | XmlParserException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 }
