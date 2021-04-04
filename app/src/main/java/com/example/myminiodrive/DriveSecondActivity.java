@@ -97,15 +97,15 @@ public class DriveSecondActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Objects b1=objectList.get(position);
-                AlertDialog dialog=new AlertDialog.Builder(DriveSecondActivity.this).setTitle("Confirmati descarcarea")
-                        .setMessage("Doriti descarcarea")
-                        .setNegativeButton("NU", new DialogInterface.OnClickListener() {
+                AlertDialog dialog=new AlertDialog.Builder(DriveSecondActivity.this).setTitle("Download Object")
+                        .setMessage("Are you sure you want to download the object?")
+                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInt, int which) {
-                                Toast.makeText(getApplicationContext(), "Datele nu au fost descarcate", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "The object was not downloaded", Toast.LENGTH_LONG).show();
                                 dialogInt.cancel();
                             }
-                        }).setPositiveButton("DA", new DialogInterface.OnClickListener() {
+                        }).setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInt, int which) {
 
@@ -143,7 +143,7 @@ public class DriveSecondActivity extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
 
-                                Toast.makeText(getApplicationContext(), "Am descarcat: "+b1.getName(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Downloaded: "+b1.getName() + " to /sdcard/Download/", Toast.LENGTH_LONG).show();
                                 dialogInt.cancel();
                             }
                         }).create();
@@ -161,15 +161,15 @@ public class DriveSecondActivity extends AppCompatActivity {
                 ObjectCustomAdapter adapter = (ObjectCustomAdapter) listView.getAdapter();
                 Objects b1=objectList.get(position);
 
-                AlertDialog dialog=new AlertDialog.Builder(DriveSecondActivity.this).setTitle("Confirmare Stergere")
-                        .setMessage("Sigur doriti stergerea")
+                AlertDialog dialog=new AlertDialog.Builder(DriveSecondActivity.this).setTitle("Delete Object")
+                        .setMessage("Are you sure you want to delete this object?")
                         .setNegativeButton("NU", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInt, int which) {
-                                Toast.makeText(getApplicationContext(), "Nu am sters nimic", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "The object was not deleted...", Toast.LENGTH_LONG).show();
                                 dialogInt.cancel();
                             }
-                        }).setPositiveButton("DA", new DialogInterface.OnClickListener() {
+                        }).setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInt, int which) {
 
@@ -189,7 +189,7 @@ public class DriveSecondActivity extends AppCompatActivity {
                                 objectList.remove(b1);
                                 adapter.notifyDataSetChanged();
 
-                                Toast.makeText(getApplicationContext(), "S-a sters : "+b1.getName(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Deleted : "+b1.getName(), Toast.LENGTH_LONG).show();
                                 dialogInt.cancel();
                             }
                         }).create();
@@ -324,6 +324,7 @@ public class DriveSecondActivity extends AppCompatActivity {
                 objectList.clear();
                 objectsGetter(name);
                 loadList();
+                Toast.makeText(getApplicationContext(), "Uploaded : "+filename + " successfully", Toast.LENGTH_LONG).show();
             } catch (ErrorResponseException | InsufficientDataException |
                     InternalException | InvalidKeyException |
                     InvalidResponseException | IOException |
