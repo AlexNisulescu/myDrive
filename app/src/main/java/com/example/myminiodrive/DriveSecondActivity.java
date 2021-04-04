@@ -302,6 +302,12 @@ public class DriveSecondActivity extends AppCompatActivity {
         }
     }
 
+    /***
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -318,7 +324,11 @@ public class DriveSecondActivity extends AppCompatActivity {
                 objectList.clear();
                 objectsGetter(name);
                 loadList();
-            } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException | XmlParserException e) {
+            } catch (ErrorResponseException | InsufficientDataException |
+                    InternalException | InvalidKeyException |
+                    InvalidResponseException | IOException |
+                    NoSuchAlgorithmException | ServerException |
+                    XmlParserException e) {
                 e.printStackTrace();
             }
 
