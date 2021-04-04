@@ -88,15 +88,15 @@ public class DriveFirstActivity extends AppCompatActivity {
                 CustomAdapter adapter = (CustomAdapter) listView.getAdapter();
                 MyBuckets b1=bucketsList.get(position);
 
-                AlertDialog dialog=new AlertDialog.Builder(DriveFirstActivity.this).setTitle("Confirmare Stergere")
-                        .setMessage("Sigur doriti stergerea")
-                        .setNegativeButton("NU", new DialogInterface.OnClickListener() {
+                AlertDialog dialog=new AlertDialog.Builder(DriveFirstActivity.this).setTitle("Delete Bucket")
+                        .setMessage("Are you sure you want to delete this bucket?")
+                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInt, int which) {
-                                Toast.makeText(getApplicationContext(), "Nu am sters nimic", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Nothing was deleted", Toast.LENGTH_LONG).show();
                                 dialogInt.cancel();
                             }
-                        }).setPositiveButton("DA", new DialogInterface.OnClickListener() {
+                        }).setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInt, int which) {
 
@@ -110,7 +110,7 @@ public class DriveFirstActivity extends AppCompatActivity {
                                 bucketsList.remove(b1);
                                 adapter.notifyDataSetChanged();
 
-                                Toast.makeText(getApplicationContext(), "S-a sters : "+b1.getName(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Deleted : "+b1.getName(), Toast.LENGTH_LONG).show();
                                 dialogInt.cancel();
                             }
                         }).create();
