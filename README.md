@@ -19,5 +19,5 @@ This project only helps you create a phone application that connects to a MinIO 
 After you have that going, all you need is to configure this application to connect to the specific server you are running. 
  ## Usage
 
-This app can be used to create your own drive storage.
+This app can be used to create your own persistent storage.
 
