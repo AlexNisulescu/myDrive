@@ -3,7 +3,7 @@
 ## Table of contents
  - [Introduction](#Introduction)
  - [Prerequisites](#Prerequisites)
- - [Application usage](#Application%20usage)
+ - [Application usage](#Application usage)
 
  ## Introduction
 This is an example application I have created in my spare time to make use of the MinIO SDK for Java. 
