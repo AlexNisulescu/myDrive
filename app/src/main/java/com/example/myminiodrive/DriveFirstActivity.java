@@ -35,6 +35,8 @@ import io.minio.errors.XmlParserException;
 import io.minio.messages.Bucket;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
@@ -62,14 +64,18 @@ public class DriveFirstActivity extends AppCompatActivity {
         listView = findViewById(R.id.listViewBuckets);
         FloatingActionButton btn=findViewById(R.id.floatingActionButton);
 
-        try {
-            bucketGetter();
-        } catch (MinioException | NoSuchAlgorithmException | IOException | InvalidKeyException e) {
+        BucketsGetter b = new BucketsGetter(){
+            @Override
+            protected void onPostExecute(MinioClient minioClient) {
+                bucketsList = bucketsRetrived;
+                loadList();
+            }
+        };try {
+            b.execute(new URL("http://10.0.2.2"));
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        if (!bucketsList.isEmpty()) {
-            loadList();
-        }
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -99,17 +105,13 @@ public class DriveFirstActivity extends AppCompatActivity {
                         }).setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInt, int which) {
-
-                                try {
-                                    minioClient.removeBucket(RemoveBucketArgs.builder().bucket(b1.getName()).build());
-                                } catch (ErrorResponseException |
-                                        InsufficientDataException |
-                                        InternalException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException | XmlParserException e) {
-                                    e.printStackTrace();
-                                }
-                                bucketsList.remove(b1);
-                                adapter.notifyDataSetChanged();
-
+                                BucketRemover b = new BucketRemover(){
+                                    @Override
+                                    protected void onPostExecute(MinioClient minioClient) {
+                                        bucketsList = bucketsRetrived;
+                                        loadList();
+                                    }
+                                };b.execute(b1.getName());
                                 Toast.makeText(getApplicationContext(), "Deleted : "+b1.getName(), Toast.LENGTH_LONG).show();
                                 dialogInt.cancel();
                             }
@@ -131,18 +133,14 @@ public class DriveFirstActivity extends AppCompatActivity {
 
                 alert.setPositiveButton("Create", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        try {
-                            minioClient.makeBucket(
-                                    MakeBucketArgs.builder()
-                                            .bucket(edittext.getText().toString())
-                                            .build());
-                            Clock cl = Clock.systemUTC();
-                            MyBuckets b=new MyBuckets(edittext.getText().toString(), ZonedDateTime.now(cl));
-                            bucketsList.add(b);
-                            adapter.notifyDataSetChanged();
-                        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException | XmlParserException e) {
-                            e.printStackTrace();
-                        }
+                        BucketMaker b = new BucketMaker(){
+                            @Override
+                            protected void onPostExecute(MinioClient minioClient) {
+                                bucketsList = bucketsRetrived;
+                                loadList();
+                            }
+                        };b.execute(edittext.getText().toString());
+
                     }
                 });
                 alert.show();
@@ -164,24 +162,4 @@ public class DriveFirstActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
 
-    public void bucketGetter()throws IOException, InvalidKeyException, InvalidResponseException, InsufficientDataException, NoSuchAlgorithmException, ServerException, InternalException, XmlParserException, ErrorResponseException{
-        List<Bucket> bucketList;
-        try {
-            minioClient =
-                    MinioClient.builder()
-                            .endpoint("10.0.2.2", 9000, false)
-                            .credentials("myminio", "myminio123")
-                            .build();
-
-            bucketList = minioClient.listBuckets();
-            for(Bucket b : bucketList){
-               MyBuckets mb=new MyBuckets(b.name(), b.creationDate());
-               bucketsList.add(mb);
-            }
-
-        } catch (MinioException e) {
-            System.out.println("Error occurred: " + e);
-            System.out.println("HTTP trace: " + e.httpTrace());
-        }
-    }
 }
