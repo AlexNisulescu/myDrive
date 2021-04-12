@@ -45,8 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DriveFirstActivity extends AppCompatActivity {
-    public static final int REQUEST_CODE=200;
-    private MinioClient minioClient;
     private List<MyBuckets> bucketsList= new ArrayList<>();
     private ListView listView;
     private Intent intent;
@@ -56,10 +54,6 @@ public class DriveFirstActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drive_first);
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
-        StrictMode.setThreadPolicy(policy);
 
         listView = findViewById(R.id.listViewBuckets);
         FloatingActionButton btn=findViewById(R.id.floatingActionButton);
@@ -140,7 +134,7 @@ public class DriveFirstActivity extends AppCompatActivity {
                                 loadList();
                             }
                         };b.execute(edittext.getText().toString());
-
+                        Toast.makeText(getApplicationContext(), "Created : "+edittext.getText().toString(), Toast.LENGTH_LONG).show();
                     }
                 });
                 alert.show();

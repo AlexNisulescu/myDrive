@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.text.Editable;
@@ -18,28 +17,23 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.minio.DownloadObjectArgs;
 import io.minio.GetObjectArgs;
 import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;
-import io.minio.RemoveBucketArgs;
 import io.minio.RemoveObjectArgs;
 import io.minio.Result;
 import io.minio.UploadObjectArgs;
@@ -57,9 +51,7 @@ public class DriveSecondActivity extends AppCompatActivity {
     private List<Objects> objectList= new ArrayList<>();
     private ListView listView;
     public static final int REQUEST_CODE=200;
-    private InputStream in;
-    private ByteArrayOutputStream out;
-    private byte[] response;
+
     String name;
 
     @Override
@@ -78,17 +70,13 @@ public class DriveSecondActivity extends AppCompatActivity {
 
         name=(String) intent.getSerializableExtra(DriveFirstActivity.BUCKET_NAME);
 
-        try {
-            objectsGetter(name);
-        } catch (IOException | InvalidKeyException | InvalidResponseException |
-                InsufficientDataException | NoSuchAlgorithmException |
-                ServerException | InternalException |
-                XmlParserException | ErrorResponseException e) {
-            e.printStackTrace();
-        }
-        if (!objectList.isEmpty()){
-            loadList();
-        }
+        ObjectsGetter o = new ObjectsGetter(){
+            @Override
+            protected void onPostExecute(MinioClient minioClient) {
+                objectList = objectRetrived;
+                loadList();
+            }
+        };o.execute(name);
 
         /***
          * This is the code used in order to download an object
@@ -108,41 +96,12 @@ public class DriveSecondActivity extends AppCompatActivity {
                         }).setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInt, int which) {
+                                ObjectsDownloader o = new ObjectsDownloader(){
+                                    @Override
+                                    protected void onPostExecute(MinioClient minioClient) {
 
-                                try {
-                                    in = new BufferedInputStream(minioClient
-                                            .getObject(GetObjectArgs.builder()
-                                                    .bucket(name).object(b1
-                                                            .getName()).
-                                                            build()));
-                                    out = new ByteArrayOutputStream();
-                                    try {
-                                        byte[] buffer = new byte[2048];
-                                        int n = 0;
-                                        while (-1 != (n = in.read(buffer))) {
-                                            out.write(buffer, 0, n);
-                                            }
-                                        out.close();
-                                        in.close();
-                                        response = out.toByteArray();
-                                        FileOutputStream fos = new FileOutputStream("/sdcard/Download/"+b1.getName());
-                                        fos.write(response);
-                                        fos.close();
                                     }
-                                    catch(IOException e){
-                                        e.printStackTrace();
-                                    }
-
-                                } catch (ErrorResponseException |
-                                        InsufficientDataException |
-                                        InternalException | InvalidKeyException |
-                                        InvalidResponseException | IOException |
-                                        NoSuchAlgorithmException |
-                                        ServerException |
-                                        XmlParserException e) {
-                                    e.printStackTrace();
-                                }
-
+                                };o.execute(name, b1.getName());
                                 Toast.makeText(getApplicationContext(), "Downloaded: "+b1.getName() + " to /sdcard/Download/", Toast.LENGTH_LONG).show();
                                 dialogInt.cancel();
                             }
@@ -163,7 +122,7 @@ public class DriveSecondActivity extends AppCompatActivity {
 
                 AlertDialog dialog=new AlertDialog.Builder(DriveSecondActivity.this).setTitle("Delete Object")
                         .setMessage("Are you sure you want to delete this object?")
-                        .setNegativeButton("NU", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInt, int which) {
                                 Toast.makeText(getApplicationContext(), "The object was not deleted...", Toast.LENGTH_LONG).show();
@@ -172,23 +131,13 @@ public class DriveSecondActivity extends AppCompatActivity {
                         }).setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInt, int which) {
-
-                                try {
-                                    minioClient.removeObject(
-                                            RemoveObjectArgs.builder().bucket(name).object(b1.getName()).build());
-                                } catch (ErrorResponseException |
-                                        InsufficientDataException |
-                                        InternalException | InvalidKeyException |
-                                        InvalidResponseException |
-                                        IOException |
-                                        NoSuchAlgorithmException |
-                                        ServerException |
-                                        XmlParserException e) {
-                                    e.printStackTrace();
-                                }
-                                objectList.remove(b1);
-                                adapter.notifyDataSetChanged();
-
+                                ObjectsRemover o = new ObjectsRemover(){
+                                    @Override
+                                    protected void onPostExecute(MinioClient minioClient) {
+                                        objectList = objectRetrived;
+                                        loadList();
+                                    }
+                                };o.execute(name, b1.getName());
                                 Toast.makeText(getApplicationContext(), "Deleted : "+b1.getName(), Toast.LENGTH_LONG).show();
                                 dialogInt.cancel();
                             }
@@ -211,15 +160,18 @@ public class DriveSecondActivity extends AppCompatActivity {
          * This is where the search bar magic happens
          */
         EditText myTextBox= findViewById(R.id.editTextSearchBar);
-
         myTextBox.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
                 if (s.toString().isEmpty()){
                     try {
-                        objectList.clear();
-                        objectsGetter(name);
-                        loadList();
+                        ObjectsGetter o = new ObjectsGetter(){
+                            @Override
+                            protected void onPostExecute(MinioClient minioClient) {
+                                objectList = objectRetrived;
+                                loadList();
+                            }
+                        };o.execute(name);
                     }
                     catch (Exception e){
                         e.printStackTrace();
@@ -233,24 +185,13 @@ public class DriveSecondActivity extends AppCompatActivity {
 
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                Iterable<Result<Item>> results;
-                results = minioClient.listObjects(
-                        ListObjectsArgs.builder().bucket(name).recursive(true).prefix((s.toString())).build());
-
-                for(Result<Item> res : results){
-                    try {
-                        objectList.clear();
-                        ObjectCustomAdapter adapter = (ObjectCustomAdapter) listView.getAdapter();
-                        Item item = res.get();
-                        Objects obj=new Objects(item.objectName(), item.size(), item.lastModified());
-                        objectList.add(obj);
-                        adapter.notifyDataSetChanged();
+                ObjectsSearch o = new ObjectsSearch(){
+                    @Override
+                    protected void onPostExecute(MinioClient minioClient) {
+                        objectList = objectRetrived;
+                        loadList();
                     }
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
-
-                }
+                };o.execute(name, s.toString());
             }
         });
 
@@ -284,36 +225,6 @@ public class DriveSecondActivity extends AppCompatActivity {
     }
 
     /***
-     * This gets all the objects from the server
-     * @param bucketName
-     * @throws IOException
-     * @throws InvalidKeyException
-     * @throws InvalidResponseException
-     * @throws InsufficientDataException
-     * @throws NoSuchAlgorithmException
-     * @throws ServerException
-     * @throws InternalException
-     * @throws XmlParserException
-     * @throws ErrorResponseException
-     */
-    public void objectsGetter(String bucketName) throws IOException, InvalidKeyException, InvalidResponseException, InsufficientDataException, NoSuchAlgorithmException, ServerException, InternalException, XmlParserException, ErrorResponseException {
-        Iterable<Result<Item>> results;
-        minioClient =
-                MinioClient.builder()
-                        .endpoint("10.0.2.2", 9000, false)
-                        .credentials("myminio", "myminio123")
-                        .build();
-        results = minioClient.listObjects(
-                ListObjectsArgs.builder().bucket(bucketName).recursive(true).build());
-
-        for(Result<Item> res : results){
-            Item item=res.get();
-            Objects obj=new Objects(item.objectName(), item.size(), item.lastModified());
-            objectList.add(obj);
-        }
-    }
-
-    /***
      *
      * @param requestCode
      * @param resultCode
@@ -328,22 +239,14 @@ public class DriveSecondActivity extends AppCompatActivity {
 
             String path = "/sdcard/Download/" + filename;
 
-            try {
-                minioClient.uploadObject(
-                        UploadObjectArgs.builder()
-                                .bucket(name).object(filename).filename(path).build());
-                objectList.clear();
-                objectsGetter(name);
-                loadList();
-                Toast.makeText(getApplicationContext(), "Uploaded : "+filename + " successfully", Toast.LENGTH_LONG).show();
-            } catch (ErrorResponseException | InsufficientDataException |
-                    InternalException | InvalidKeyException |
-                    InvalidResponseException | IOException |
-                    NoSuchAlgorithmException | ServerException |
-                    XmlParserException e) {
-                e.printStackTrace();
-            }
-
+            ObjectsMaker o = new ObjectsMaker(){
+                @Override
+                protected void onPostExecute(MinioClient minioClient) {
+                    objectList = objectRetrived;
+                    loadList();
+                }
+            };o.execute(name, filename, path);
+            Toast.makeText(getApplicationContext(), "Uploaded : "+filename + " successfully", Toast.LENGTH_LONG).show();
         }
     }
 }
