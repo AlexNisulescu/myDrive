@@ -10,10 +10,16 @@ import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYPlot;
+import com.androidplot.xy.XYSeries;
+
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.minio.ListObjectsArgs;
@@ -54,15 +60,37 @@ public class StatsActivity extends AppCompatActivity {
                 ErrorResponseException e) {
             e.printStackTrace();
         }
-        usage=0;
-        usageCalculator();
-        int percentage = (usage*100)/10000000;
+
+        List<Double> Size = new ArrayList<>();
+        for(Objects obj : objectList)
+            Size.add(Double.valueOf(obj.getSize()));
+
+        XYPlot plot = findViewById(R.id.mySimpleXYPlot);
+
+        plot.setTitle("Occupied Space graphic");
+
+        XYSeries series1 = new SimpleXYSeries(Size, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Occupied");
+        plot.addSeries(series1, new LineAndPointFormatter(getApplicationContext(), R.layout.f1));
 
         ProgressBar pb = findViewById(R.id.stats_progressbar);
         TextView tv = findViewById(R.id.usageTextView);
 
+        int imagesCount = 0;
+        int othersCount = 0;
+
+        for (int i =0;i<stats.size();i++){
+            String type = stats.get(i).contentType();
+            if (type.equals("image/jpeg")){
+                imagesCount++;
+            }
+            else{
+                othersCount++;
+            }
+        }
+        othersCount+=imagesCount;
+        int percentage = imagesCount*100/othersCount;
         pb.setProgress(percentage);
-        tv.setText(String.valueOf(usage) + " / 10000000");
+        tv.setText(imagesCount + " / " + othersCount);
 
     }
 

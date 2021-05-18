@@ -9,4 +9,9 @@
     <string name="email">Email</string>
     <string name="search">Search...</string>
     <string name="space_used_vs_total_bucket_space">Space Used vs. Total Bucket Space</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="settings">Settings</string>
+    <string name="servers_location">Servers Location</string>
+    <string name="cloud_buckets">Cloud Buckets</string>
+    <string name="images_out_of_total_files">Images out of total files:</string>
 </resources>
