@@ -52,7 +52,7 @@ public class BucketMaker extends AsyncTask <String, Void, MinioClient> {
                 MyBuckets mb=new MyBuckets(b.name(), b.creationDate());
                 bucketsRetrived.add(mb);
             }
-        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException | XmlParserException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
